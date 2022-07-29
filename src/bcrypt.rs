@@ -63,6 +63,8 @@
 //!
 //! * _`{checksum}`_ is a 31-character Base64 encoding of the computed hash.
 
+#![cfg(feature="bcrypt")]
+
 use super::{Result, HashSetup, consteq};
 use crate::enc_dec::{bcrypt_hash64_encode,bcrypt_hash64_decode};
 use crate::error::Error;

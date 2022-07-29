@@ -351,9 +351,10 @@ pub mod unix {
 
 	#[cfg(feature="md5crypt")]
 	use crate::md5_crypt;
-	
+
+	#[cfg(feature="bcrypt")]
 	use crate::bcrypt;
-	
+
 	#[cfg(feature="sha1crypt")]
 	use crate::sha1_crypt;
 
@@ -373,6 +374,7 @@ pub mod unix {
 		    "$" => match hs.take_until(b'$').unwrap_or("X") {
 				#[cfg(feature="md5crypt")]
 				"1" => md5_crypt::hash_with(hash, pass),
+				#[cfg(feature="bcrypt")]
 				"2a" | "2b" | "2y" => bcrypt::hash_with(hash, pass),
 				#[cfg(feature="sha1crypt")]
 				"sha1" => sha1_crypt::hash_with(hash, pass),
