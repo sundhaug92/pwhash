@@ -573,6 +573,7 @@ use super::Result;
 
 const DES_ROUNDS: u32 = 25;
 
+// Maybe this should be in unix_crypt.rs
 pub fn unix_crypt(key: &[u8], salt: &str) -> Result<String> {
     let keyword = secret_to_key(key);
     let salt_val = decode_val(salt, unix_crypt::SALT_LEN)?;
@@ -581,6 +582,8 @@ pub fn unix_crypt(key: &[u8], salt: &str) -> Result<String> {
 
 #[cfg(feature="bsdi_crypt")]
 use super::bsdi_crypt;
+
+#[cfg(feature="bsdi_crypt")]
 use std::cmp::min;
 
 // Maybe this should be in bsdi_crypt.rs
