@@ -39,6 +39,8 @@
 //!
 //! * *`{checksum}`* is a 11-character Base64 encoding of the checksum.
 
+#![cfg(feature="unix_crypt")]
+
 use super::{Result, consteq};
 use crate::des_crypt::unix_crypt;
 use crate::random;

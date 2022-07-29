@@ -41,6 +41,8 @@
 //!
 //! * *`{checksum}`* is a 11-character Base64 encoding of the checksum.
 
+#![cfg(feature="bsdi_crypt")]
+
 use super::{Result, HashSetup, IntoHashSetup, consteq};
 use crate::des_crypt::bsdi_crypt;
 use crate::enc_dec::decode_val;

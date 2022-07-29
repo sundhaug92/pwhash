@@ -13,10 +13,14 @@ categories = ["cryptography", "authentication"]
 edition = "2021"
 
 [features]
+# For now, *crypt is a whole feature each, rather than split into common, verify, generate with random salt, and generate with specific salt
 md5crypt = ["dep:md-5"]
 sha1crypt = ["dep:sha-1"]
 sha2crypt = ["dep:sha2"]
-unix_crypt = ["md5crypt", "sha1crypt", "sha2crypt"]
+
+# For now, we have to have a dependency "up" towards unix_crypt, and have descrypt be a singular thing rather than split into bsdi_crypt and descrypt
+descrypt = ["unix_crypt"]
+unix_crypt = ["descrypt"]
 
 [dependencies]
 md-5 = { version = "0.10.1", optional = true }

@@ -336,6 +336,7 @@ mod parse {
 }
 
 pub mod unix {
+	#![cfg(feature="unix_crypt")]
     //! Convenience functions for Unix modular hashes.
     //!
     //! If it's known that a hash is in one of the supported modular hash formats,
@@ -345,6 +346,7 @@ pub mod unix {
     use crate::parse::{self, HashIterator};
     use crate::error::Error;
 
+	#[cfg(feature="bsdi_crypt")]
 	use crate::bsdi_crypt;
 
 	#[cfg(feature="md5crypt")]
@@ -361,39 +363,44 @@ pub mod unix {
 	use crate::unix_crypt;
 
     /// A Unix __crypt__(3) work-alike.
+
     pub fn crypt<B: AsRef<[u8]>>(pass: B, hash: &str) -> Result<String> {
-	let mut hs = parse::HashSlice::new(hash);
-	#[allow(deprecated)]
-	match hs.take(1).unwrap_or("X") {
-	    "_" => bsdi_crypt::hash_with(hash, pass),
-	    "$" => match hs.take_until(b'$').unwrap_or("X") {
-			#[cfg(feature="md5crypt")]
-			"1" => md5_crypt::hash_with(hash, pass),
-			"2a" | "2b" | "2y" => bcrypt::hash_with(hash, pass),
-			#[cfg(feature="sha1crypt")]
-			"sha1" => sha1_crypt::hash_with(hash, pass),
-			#[cfg(feature="sha2crypt")]
-			"5" => sha256_crypt::hash_with(hash, pass),
-			#[cfg(feature="sha2crypt")]
-			"6" => sha512_crypt::hash_with(hash, pass),
-			_ => Err(Error::InvalidHashString),
-	    },
-	    _ => unix_crypt::hash_with(hash, pass)
-	}
+		let mut hs = parse::HashSlice::new(hash);
+		#[allow(deprecated)]
+		match hs.take(1).unwrap_or("X") {
+			#[cfg(feature="bsdi_crypt")]
+		    "_" => bsdi_crypt::hash_with(hash, pass),
+		    "$" => match hs.take_until(b'$').unwrap_or("X") {
+				#[cfg(feature="md5crypt")]
+				"1" => md5_crypt::hash_with(hash, pass),
+				"2a" | "2b" | "2y" => bcrypt::hash_with(hash, pass),
+				#[cfg(feature="sha1crypt")]
+				"sha1" => sha1_crypt::hash_with(hash, pass),
+				#[cfg(feature="sha2crypt")]
+				"5" => sha256_crypt::hash_with(hash, pass),
+				#[cfg(feature="sha2crypt")]
+				"6" => sha512_crypt::hash_with(hash, pass),
+				_ => Err(Error::InvalidHashString),
+		    },
+		    _ => unix_crypt::hash_with(hash, pass)
+		}
     }
 
     /// Verify that the hash corresponds to a password, using hash format recognition.
     pub fn verify<B: AsRef<[u8]>>(pass: B, hash: &str) -> bool {
-	consteq(hash, crypt(pass, hash))
+		consteq(hash, crypt(pass, hash))
     }
 
     #[cfg(test)]
     mod tests {
-	#[test]
-	fn crypt_recognized() {
-	    assert_eq!(super::crypt("password", "$1$5pZSV9va$azfrPr6af3Fc7dLblQXVa0").unwrap(),
-		"$1$5pZSV9va$azfrPr6af3Fc7dLblQXVa0");
-	    assert_eq!(super::crypt("test", "aZGJuE6EXrjEE").unwrap(), "aZGJuE6EXrjEE");
-	}
+		#[test]
+		#[cfg(feature="unix_crypt")]
+		fn crypt_recognized() {
+			#[cfg(feature="md5crypt")]
+		    assert_eq!(super::crypt("password", "$1$5pZSV9va$azfrPr6af3Fc7dLblQXVa0").unwrap(),
+			"$1$5pZSV9va$azfrPr6af3Fc7dLblQXVa0");
+			#[cfg(feature="descrypt")]
+		    assert_eq!(super::crypt("test", "aZGJuE6EXrjEE").unwrap(), "aZGJuE6EXrjEE");
+		}
     }
 }

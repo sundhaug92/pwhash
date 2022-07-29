@@ -31,6 +31,8 @@
 // @version $Id: UnixCrypt2.txt,v 1.1.1.1 2005/09/13 22:20:13 christos Exp $
 // @author Greg Wilkins (gregw)
 
+#![cfg(feature="descrypt")]
+
 const PC1ROT: [[u64; 16]; 16] = [
     [ 0x0000000000000000, 0x0000000000000000, 0x0000010000000000, 0x0000010000000000,
       0x0000000100000000, 0x0000000100000000, 0x0000010100000000, 0x0000010100000000,
@@ -577,9 +579,12 @@ pub fn unix_crypt(key: &[u8], salt: &str) -> Result<String> {
     Ok(format!("{}{}", encode_val(salt_val, unix_crypt::SALT_LEN), do_0_crypt(keyword, salt_val, DES_ROUNDS)))
 }
 
+#[cfg(feature="bsdi_crypt")]
 use super::bsdi_crypt;
 use std::cmp::min;
 
+// Maybe this should be in bsdi_crypt.rs
+#[cfg(feature="bsdi_crypt")]
 pub fn bsdi_crypt(key: &[u8], salt: &str, rounds: u32) -> Result<String> {
     let keylen = key.len();
     let mut keyword = secret_to_key(&key[..min(keylen, 8)]);
