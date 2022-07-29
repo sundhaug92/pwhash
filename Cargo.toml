@@ -21,7 +21,7 @@ sha2crypt = ["dep:sha2"]
 # For now, we have to have a dependency "up" towards unix_crypt, and have descrypt be a singular thing rather than split into bsdi_crypt and descrypt
 descrypt = ["unix_crypt"]
 
-bcrypt = ["dep:blowfish"]
+bcrypt = ["dep:blowfish", "dep:byteorder"]
 
 unix_crypt = ["descrypt"]
 
@@ -31,5 +31,7 @@ sha-1 = { version = "0.9", optional = true }
 sha2 = { version = "0.9", optional = true }
 blowfish = { version = "0.8.0", features = ["bcrypt"], optional = true }
 hmac = { version = "0.10", optional = true }
-byteorder = "1"
+byteorder = { version = "1", optional = true }
+
+# Rand is required _for now_
 rand = "0.8"
