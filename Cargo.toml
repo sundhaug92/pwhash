@@ -13,6 +13,9 @@ categories = ["cryptography", "authentication"]
 edition = "2021"
 
 [features]
+
+default = ["md5crypt", "sha1crypt", "sha2crypt", "descrypt", "bcrypt", "unix_crypt"]
+
 # For now, *crypt is a whole feature each, rather than split into common, verify, generate with random salt, and generate with specific salt
 md5crypt = ["dep:md-5"]
 sha1crypt = ["dep:sha-1", "dep:hmac"]
