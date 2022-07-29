@@ -45,6 +45,8 @@
 //!
 //! * *`{checksum}`* is a 28-character Base64 encoding of the checksum.
 
+#![cfg(feature="sha1crypt")]
+
 use hmac::{Hmac, Mac, NewMac};
 use sha1::Sha1;
 use super::{Result, HashSetup, IntoHashSetup, consteq};

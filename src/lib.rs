@@ -179,13 +179,13 @@ mod random {
     use crate::enc_dec::bcrypt_hash64_encode;
 
     pub fn gen_salt_str(chars: usize) -> String {
-	let bytes = ((chars + 3) / 4) * 3;
-	let rv = OsRng.sample_iter(&Standard).take(bytes).collect::<Vec<u8>>();
-	let mut sstr = bcrypt_hash64_encode(&rv);
-	while sstr.len() > chars {
-	    sstr.pop();
-	}
-	sstr
+		let bytes = ((chars + 3) / 4) * 3;
+		let rv = OsRng.sample_iter(&Standard).take(bytes).collect::<Vec<u8>>();
+		let mut sstr = bcrypt_hash64_encode(&rv);
+		while sstr.len() > chars {
+		    sstr.pop();
+		}
+		sstr
     }
 
     pub fn gen_salt_bytes(bytes: &mut [u8]) {
@@ -344,7 +344,21 @@ pub mod unix {
     use super::{Result, consteq};
     use crate::parse::{self, HashIterator};
     use crate::error::Error;
-    use crate::{bsdi_crypt, md5_crypt, bcrypt, sha1_crypt, sha256_crypt, sha512_crypt, unix_crypt};
+
+	use crate::bsdi_crypt;
+
+	#[cfg(feature="md5crypt")]
+	use crate::md5_crypt;
+	
+	use crate::bcrypt;
+	
+	#[cfg(feature="sha1crypt")]
+	use crate::sha1_crypt;
+
+	#[cfg(feature="sha2crypt")]
+    use crate::{sha256_crypt, sha512_crypt};
+
+	use crate::unix_crypt;
 
     /// A Unix __crypt__(3) work-alike.
     pub fn crypt<B: AsRef<[u8]>>(pass: B, hash: &str) -> Result<String> {
@@ -353,12 +367,16 @@ pub mod unix {
 	match hs.take(1).unwrap_or("X") {
 	    "_" => bsdi_crypt::hash_with(hash, pass),
 	    "$" => match hs.take_until(b'$').unwrap_or("X") {
-		"1" => md5_crypt::hash_with(hash, pass),
-		"2a" | "2b" | "2y" => bcrypt::hash_with(hash, pass),
-		"sha1" => sha1_crypt::hash_with(hash, pass),
-		"5" => sha256_crypt::hash_with(hash, pass),
-		"6" => sha512_crypt::hash_with(hash, pass),
-		_ => Err(Error::InvalidHashString),
+			#[cfg(feature="md5crypt")]
+			"1" => md5_crypt::hash_with(hash, pass),
+			"2a" | "2b" | "2y" => bcrypt::hash_with(hash, pass),
+			#[cfg(feature="sha1crypt")]
+			"sha1" => sha1_crypt::hash_with(hash, pass),
+			#[cfg(feature="sha2crypt")]
+			"5" => sha256_crypt::hash_with(hash, pass),
+			#[cfg(feature="sha2crypt")]
+			"6" => sha512_crypt::hash_with(hash, pass),
+			_ => Err(Error::InvalidHashString),
 	    },
 	    _ => unix_crypt::hash_with(hash, pass)
 	}

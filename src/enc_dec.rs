@@ -96,8 +96,9 @@ fn b_c_hash64_encode(bs: &[u8], hs: &[u8]) -> String {
     out
 }
 
+#[cfg(feature="sha1crypt")]
 const SHA1_HASH_LEN: usize = 20;
-
+#[cfg(feature="sha1crypt")]
 pub fn sha1crypt_hash64_encode(bs: &[u8]) -> String {
     assert!(bs.len() >= SHA1_HASH_LEN);
     let ngroups = (SHA1_HASH_LEN + 2) / 3;
@@ -119,6 +120,7 @@ pub fn sha1crypt_hash64_encode(bs: &[u8]) -> String {
     out
 }
 
+#[cfg(any(feature="md5crypt", feature="sha2crypt"))]
 pub fn md5_sha2_hash64_encode(bs: &[u8]) -> String {
     let ngroups = (bs.len() + 2) / 3;
     let mut out = String::with_capacity(ngroups * 4);

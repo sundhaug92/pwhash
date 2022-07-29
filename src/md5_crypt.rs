@@ -40,6 +40,8 @@
 //!
 //! * *`{checksum}`* is a 22-character Base64 encoding of the checksum.
 
+#![cfg(feature="md5crypt")]
+
 use md5::{Md5, Digest};
 use super::{Result, HashSetup, IntoHashSetup, consteq};
 use crate::error::Error;

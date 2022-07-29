@@ -7,6 +7,8 @@
 // modified, or distributed except according to the terms of this
 // license.
 
+#![cfg(feature="sha2crypt")]
+
 use std::cmp::min;
 use sha2::Digest;
 use crate::enc_dec::{md5_sha2_hash64_encode, bcrypt_hash64_decode};

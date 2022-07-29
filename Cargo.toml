@@ -12,10 +12,16 @@ keywords = ["password", "hash", "hashing", "crypt"]
 categories = ["cryptography", "authentication"]
 edition = "2021"
 
+[features]
+md5crypt = ["dep:md-5"]
+sha1crypt = ["dep:sha-1"]
+sha2crypt = ["dep:sha2"]
+unix_crypt = ["md5crypt", "sha1crypt", "sha2crypt"]
+
 [dependencies]
-md-5 = "0.10.1"
-sha-1 = "0.9"
-sha2 = "0.9"
+md-5 = { version = "0.10.1", optional = true }
+sha-1 = { version = "0.9", optional = true }
+sha2 = { version = "0.9", optional = true }
 blowfish = { version = "0.8.0", features = ["bcrypt"] }
 hmac = "0.10"
 byteorder = "1"

@@ -48,6 +48,8 @@
 //! The format __`$6$`__*`{salt}`*__$__*`{checksum}`* can be used if
 //! the default number of rounds is chosen.
 
+#![cfg(feature="sha2crypt")]
+
 use sha2::Sha512;
 use super::{Result, HashSetup, IntoHashSetup, consteq};
 use crate::random;
