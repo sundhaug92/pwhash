@@ -17,6 +17,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-2019, macOS-latest]
         rust: [stable, nightly]
+        feature: [default, md5crypt, sha1crypt, sha2crypt, descrypt, bcrypt, unix_crypt]
 
     steps:
       - name: Checkout code
@@ -33,7 +34,7 @@ jobs:
           RUSTFLAGS: '-D warnings'
         with:
           command: build
-          args: --verbose
+          args: --verbose -F ${{ matrix.feature }}
       - name: Run tests
         uses: actions-rs/cargo@v1
         # force to build tests without warnings
@@ -41,5 +42,5 @@ jobs:
           RUSTFLAGS: '-D warnings'
         with:
           command: test
-          args: --verbose
+          args: --verbose -F ${{ matrix.feature }}
 
