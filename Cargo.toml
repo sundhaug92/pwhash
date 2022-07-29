@@ -15,7 +15,7 @@ edition = "2021"
 [features]
 # For now, *crypt is a whole feature each, rather than split into common, verify, generate with random salt, and generate with specific salt
 md5crypt = ["dep:md-5"]
-sha1crypt = ["dep:sha-1"]
+sha1crypt = ["dep:sha-1", "dep:hmac"]
 sha2crypt = ["dep:sha2"]
 
 # For now, we have to have a dependency "up" towards unix_crypt, and have descrypt be a singular thing rather than split into bsdi_crypt and descrypt
@@ -30,6 +30,6 @@ md-5 = { version = "0.10.1", optional = true }
 sha-1 = { version = "0.9", optional = true }
 sha2 = { version = "0.9", optional = true }
 blowfish = { version = "0.8.0", features = ["bcrypt"], optional = true }
-hmac = "0.10"
+hmac = { version = "0.10", optional = true }
 byteorder = "1"
 rand = "0.8"
